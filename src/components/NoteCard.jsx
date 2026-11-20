@@ -1,9 +1,8 @@
 import { useState, useContext, memo } from 'react'
 import { SettingsContext } from '../SettingsContext.js'
-console.log('render', title)
 
 function NoteCard({ id, title, body, onDelete }) {
-  const [open, setOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
   const { largeText } = useContext(SettingsContext)
 
   return (
@@ -17,7 +16,7 @@ function NoteCard({ id, title, body, onDelete }) {
       >
         {title}
       </h3>
-      {open && (
+      {isOpen && (
         <p
           className={
             largeText
@@ -31,9 +30,9 @@ function NoteCard({ id, title, body, onDelete }) {
       <button
         type="button"
         className="mt-3 cursor-pointer text-[15px] font-normal text-[#b83f45] underline"
-        onClick={() => setOpen(!open)}
+        onClick={() => setIsOpen(!isOpen)}
       >
-        {open ? 'Show less' : 'Show more'}
+        {isOpen ? 'Show less' : 'Show more'}
       </button>
       <button
         type="button"
