@@ -1,9 +1,13 @@
 import NoteCard from './NoteCard.jsx'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 function Notes() {
     const [form, setForm] = useState({ title: '', body: '' })
     const [search, setSearch] = useState('')
+
+    useEffect(() => {
+        localStorage.setItem('notes', JSON.stringify(notes))
+    }, [notes])
 
     const [notes, setNotes] = useState([
         { id: 1, title: 'Review map and filter', body: 'Redo the TodoMVC steps without looking at the guide.' },
