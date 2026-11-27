@@ -1,12 +1,10 @@
 import NoteCard from './NoteCard.jsx'
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 
-const startingNotes = [
-    { id: 1, title: 'Review map and filter', body: 'Redo the TodoMVC steps without looking at the guide.' },
-    { id: 2, title: 'Prepare for the quiz', body: 'Practice writing one handler for many inputs.' },
-]
+const API_URL = import.meta.env.VITE_API_URL
 
 function Notes() {
+    const [notes, setNotes] = useState([])
     const [form, setForm] = useState(() => {
         const saved = localStorage.getItem('draft')
         return saved ? JSON.parse(saved) : { title: '', body: '' }
@@ -14,14 +12,15 @@ function Notes() {
     const [search, setSearch] = useState('')
     const titleRef = useRef(null)
 
-    const [notes, setNotes] = useState(() => {
-        const saved = localStorage.getItem('notes')
-        return saved ? JSON.parse(saved) : startingNotes
-    })
-
     useEffect(() => {
-        localStorage.setItem('notes', JSON.stringify(notes))
-    }, [notes])
+        async function loadNotes() {
+            const res = await fetch(API_URL + '/notes')
+            const data = await res.json()
+            setNotes(data)
+        }
+
+        loadNotes()
+    }, [])
 
     useEffect(() => {
         const id = setTimeout(() => {
@@ -35,15 +34,15 @@ function Notes() {
     }
 
     function handleSubmit(e) {
-        e.preventDefault()                      // stops page reload
+        e.preventDefault()                    
         const title = form.title.trim()
         const body = form.body.trim()
-        if (title === '' || body === '') return // do nothing if empty
+        if (title === '' || body === '') return 
 
         const newNote = { id: Date.now(), title, body }
-        setNotes([...notes, newNote])           // add at the END
+        setNotes([...notes, newNote])     
         setForm({ title: '', body: '' })
-        titleRef.current.focus()       // clear both boxes
+        titleRef.current.focus()     
     }
 
     const handleDelete = useCallback((id) => {
